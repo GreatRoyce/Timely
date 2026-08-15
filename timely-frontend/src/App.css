@@ -1,0 +1,18 @@
+*, html {
+    box-sizing: border-box;
+    /* border: 1px solid #ccc; */
+}
+body{
+     font-family: "Share Tech", sans-serif;
+}
+.textshade{
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hoverfeature:hover .Icon{
+    background-color: #C7D2FE;  
+    transition: 0.3s;
+}
+.shade{
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}

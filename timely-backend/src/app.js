@@ -1,0 +1,46 @@
+require("./config/env");
+
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+
+const { env } = require("./config/env");
+const apiRoutes = require("./routes");
+const {
+  notFound,
+  errorHandler,
+} = require("./middleware/error.middleware");
+
+const app = express();
+
+const corsOptions = {
+  credentials: true,
+  origin(origin, callback) {
+    if (!origin || env.corsOrigins.length === 0 || env.corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    const error = new Error("Origin is not allowed by CORS");
+    error.statusCode = 403;
+    return callback(error);
+  },
+};
+
+app.disable("x-powered-by");
+app.use(helmet());
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+app.use(cookieParser());
+
+if (env.nodeEnv !== "test") {
+  app.use(morgan("dev"));
+}
+
+app.use("/api/v1", apiRoutes);
+app.use(notFound);
+app.use(errorHandler);
+
+module.exports = app;
