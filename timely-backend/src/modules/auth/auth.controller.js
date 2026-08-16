@@ -227,8 +227,29 @@ const resetPasswordController = async (
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    const user = await getCurrentUser(
+      req.user.userId
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
+  getMe,
   login,
   refresh,
   logout,

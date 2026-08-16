@@ -1,5 +1,5 @@
 require("./config/env");
-
+const { notFound, errorHandler } = require("./middleware/error.middleware");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -8,17 +8,25 @@ const morgan = require("morgan");
 
 const { env } = require("./config/env");
 const apiRoutes = require("./routes");
-const {
-  notFound,
-  errorHandler,
-} = require("./middleware/error.middleware");
+const authRoutes = require("./modules/auth/auth.routes");
+const taskRoutes = require(
+  "./modules/tasks/task.routes"
+);
+const customerRoutes = require(
+  "./modules/customers/customer.routes"
+);
+
 
 const app = express();
 
 const corsOptions = {
   credentials: true,
   origin(origin, callback) {
-    if (!origin || env.corsOrigins.length === 0 || env.corsOrigins.includes(origin)) {
+    if (
+      !origin ||
+      env.corsOrigins.length === 0 ||
+      env.corsOrigins.includes(origin)
+    ) {
       return callback(null, true);
     }
 
@@ -38,6 +46,15 @@ app.use(cookieParser());
 if (env.nodeEnv !== "test") {
   app.use(morgan("dev"));
 }
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/customers", customerRoutes);
+
+// ===============================
+// Error Handling
+// ===============================
+
 
 app.use("/api/v1", apiRoutes);
 app.use(notFound);

@@ -1,5 +1,7 @@
 const express = require("express");
 
+const protect = require("../../middleware/auth.middleware");
+
 const {
   register,
   login,
@@ -7,6 +9,7 @@ const {
   logout,
   forgotPasswordController,
   resetPasswordController,
+  getMe,
 } = require("./auth.controller");
 
 const router = express.Router();
@@ -28,5 +31,8 @@ router.post(
   "/reset-password",
   resetPasswordController
 );
+
+// Protected route
+router.get("/me", protect, getMe);
 
 module.exports = router;

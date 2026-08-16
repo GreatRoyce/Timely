@@ -2,7 +2,7 @@ const express = require("express");
 
 const authRoutes = require("../modules/auth/auth.routes");
 const userRoutes = require("../modules/users/user.routes");
-const orderRoutes = require("../modules/orders/order.routes");
+const orderRoutes = require("../modules/tasks/task.routes");
 const customerRoutes = require("../modules/customers/customer.routes");
 const reminderRoutes = require("../modules/reminders/reminder.routes");
 const notificationRoutes = require("../modules/notifications/notification.routes");

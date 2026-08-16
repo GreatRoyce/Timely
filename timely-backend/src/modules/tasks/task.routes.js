@@ -8,11 +8,12 @@ const {
   getOne,
   update,
   remove,
-} = require("./customer.controller");
+  complete,
+} = require("./task.controller");
 
 const router = express.Router();
 
-// All customer routes require authentication
+// All task routes require authentication
 router.use(protect);
 
 router.post("/", create);
@@ -22,6 +23,8 @@ router.get("/", getAll);
 router.get("/:id", getOne);
 
 router.patch("/:id", update);
+
+router.patch("/:id/complete", complete);
 
 router.delete("/:id", remove);
 
