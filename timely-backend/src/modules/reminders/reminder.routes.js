@@ -1,3 +1,30 @@
-const createNotImplementedRouter = require("../../utils/createNotImplementedRouter");
+const express = require("express");
 
-module.exports = createNotImplementedRouter("Reminders");
+const protect = require("../../middleware/auth.middleware");
+
+const {
+  create,
+  getAll,
+  getOne,
+  update,
+  cancel,
+  remove,
+} = require("./reminder.controller");
+
+const router = express.Router();
+
+router.use(protect);
+
+router.post("/", create);
+
+router.get("/", getAll);
+
+router.get("/:id", getOne);
+
+router.patch("/:id", update);
+
+router.patch("/:id/cancel", cancel);
+
+router.delete("/:id", remove);
+
+module.exports = router;

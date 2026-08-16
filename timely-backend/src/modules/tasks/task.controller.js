@@ -1,9 +1,6 @@
 const asyncHandler = require("../../utils/asyncHandler");
 
-const {
-  createTaskSchema,
-  updateTaskSchema,
-} = require("./task.validation");
+const { createTaskSchema, updateTaskSchema } = require("./task.validation");
 
 const {
   createTask,
@@ -21,10 +18,7 @@ const {
 const create = asyncHandler(async (req, res) => {
   const data = createTaskSchema.parse(req.body);
 
-  const task = await createTask(
-    req.user.userId,
-    data
-  );
+  const task = await createTask(req.user.userId, data);
 
   res.status(201).json({
     success: true,
@@ -40,15 +34,11 @@ const create = asyncHandler(async (req, res) => {
 // ==========================================
 
 const getAll = asyncHandler(async (req, res) => {
-  const tasks = await getTasks(
-    req.user.userId
-  );
+  const result = await getTasks(req.user.userId, req.query);
 
   res.status(200).json({
     success: true,
-    data: {
-      tasks,
-    },
+    data: result,
   });
 });
 
@@ -57,10 +47,7 @@ const getAll = asyncHandler(async (req, res) => {
 // ==========================================
 
 const getOne = asyncHandler(async (req, res) => {
-  const task = await getTaskById(
-    req.user.userId,
-    req.params.id
-  );
+  const task = await getTaskById(req.user.userId, req.params.id);
 
   res.status(200).json({
     success: true,
@@ -77,11 +64,7 @@ const getOne = asyncHandler(async (req, res) => {
 const update = asyncHandler(async (req, res) => {
   const data = updateTaskSchema.parse(req.body);
 
-  const task = await updateTask(
-    req.user.userId,
-    req.params.id,
-    data
-  );
+  const task = await updateTask(req.user.userId, req.params.id, data);
 
   res.status(200).json({
     success: true,
@@ -97,10 +80,7 @@ const update = asyncHandler(async (req, res) => {
 // ==========================================
 
 const remove = asyncHandler(async (req, res) => {
-  await deleteTask(
-    req.user.userId,
-    req.params.id
-  );
+  await deleteTask(req.user.userId, req.params.id);
 
   res.status(200).json({
     success: true,
@@ -113,10 +93,7 @@ const remove = asyncHandler(async (req, res) => {
 // ==========================================
 
 const complete = asyncHandler(async (req, res) => {
-  const task = await completeTask(
-    req.user.userId,
-    req.params.id
-  );
+  const task = await completeTask(req.user.userId, req.params.id);
 
   res.status(200).json({
     success: true,

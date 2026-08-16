@@ -15,6 +15,12 @@ const taskRoutes = require(
 const customerRoutes = require(
   "./modules/customers/customer.routes"
 );
+const dashboardRoutes = require(
+  "./modules/dashboard/dashboard.routes"
+);
+const reminderRoutes = require(
+  "./modules/reminders/reminder.routes"
+);
 
 
 const app = express();
@@ -50,6 +56,8 @@ if (env.nodeEnv !== "test") {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/customers", customerRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/reminders", reminderRoutes);
 
 // ===============================
 // Error Handling

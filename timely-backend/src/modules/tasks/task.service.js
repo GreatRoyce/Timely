@@ -47,17 +47,121 @@ const createTask = async (userId, taskData) => {
 // Get All Tasks
 // ==========================================
 
-const getTasks = async (userId) => {
-  const tasks = await Task.find({
-    userId,
-  })
-    .populate("customerId", "name phone")
-    .sort({
-      dueDate: 1,
-      dueTime: 1,
-    });
+const getTasks = async (userId, filters = {}) => {
+  const {
+    status,
+    priority,
+    due,
+    search,
+    page = 1,
+    limit = 20,
+  } = filters;
 
-  return tasks;
+  const query = {
+    userId,
+  };
+
+  // Status filter
+  if (status) {
+    query.status = status;
+  }
+
+  // Priority filter
+  if (priority) {
+    query.priority = priority;
+  }
+
+  // Search by task title
+  if (search) {
+    query.title = {
+      $regex: search,
+      $options: "i",
+    };
+  }
+
+  // Date filters
+  const now = new Date();
+
+  if (due === "today") {
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    query.dueDate = {
+      $gte: startOfDay,
+      $lte: endOfDay,
+    };
+  }
+
+  if (due === "upcoming") {
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    query.dueDate = {
+      $gte: startOfDay,
+    };
+
+    query.status = {
+      $nin: ["completed", "cancelled"],
+    };
+  }
+
+  if (due === "overdue") {
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    query.dueDate = {
+      $lt: startOfToday,
+    };
+
+    query.status = {
+      $nin: ["completed", "cancelled"],
+    };
+  }
+
+  // Pagination
+  const currentPage = Math.max(
+    Number(page) || 1,
+    1
+  );
+
+  const perPage = Math.min(
+    Math.max(Number(limit) || 20, 1),
+    100
+  );
+
+  const skip =
+    (currentPage - 1) * perPage;
+
+  const [tasks, total] = await Promise.all([
+    Task.find(query)
+      .populate(
+        "customerId",
+        "name phone"
+      )
+      .sort({
+        dueDate: 1,
+        dueTime: 1,
+      })
+      .skip(skip)
+      .limit(perPage),
+
+    Task.countDocuments(query),
+  ]);
+
+  return {
+    tasks,
+    pagination: {
+      page: currentPage,
+      limit: perPage,
+      total,
+      totalPages: Math.ceil(
+        total / perPage
+      ),
+    },
+  };
 };
 
 // ==========================================

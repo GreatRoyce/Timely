@@ -1,3 +1,15 @@
-const createNotImplementedRouter = require("../../utils/createNotImplementedRouter");
+const express = require("express");
 
-module.exports = createNotImplementedRouter("Dashboard");
+const protect = require("../../middleware/auth.middleware");
+
+const {
+  getOverview,
+} = require("./dashboard.controller");
+
+const router = express.Router();
+
+router.use(protect);
+
+router.get("/", getOverview);
+
+module.exports = router;
