@@ -16,8 +16,10 @@ const createReminder = async (
     remindAt,
   } = reminderData;
 
-  // Make sure the task belongs
-  // to the authenticated user.
+  // ------------------------------------------
+  // Verify Task Ownership
+  // ------------------------------------------
+
   const task = await Task.findOne({
     _id: taskId,
     userId,
@@ -30,8 +32,10 @@ const createReminder = async (
     );
   }
 
-  // Prevent reminders from being created
-  // for completed or cancelled tasks.
+  // ------------------------------------------
+  // Task Status
+  // ------------------------------------------
+
   if (
     task.status === "completed" ||
     task.status === "cancelled"
@@ -42,11 +46,41 @@ const createReminder = async (
     );
   }
 
-  const reminder = await Reminder.create({
-    userId,
-    taskId,
-    remindAt,
-  });
+  // ------------------------------------------
+  // Prevent Duplicate Reminder
+  // ------------------------------------------
+
+  const existingReminder =
+    await Reminder.findOne({
+      userId,
+      taskId,
+      remindAt,
+      status: {
+        $in: [
+          "scheduled",
+          "processing",
+          "sent",
+        ],
+      },
+    });
+
+  if (existingReminder) {
+    throw new AppError(
+      "A reminder already exists for this task at this time",
+      409
+    );
+  }
+
+  // ------------------------------------------
+  // Create Reminder
+  // ------------------------------------------
+
+  const reminder =
+    await Reminder.create({
+      userId,
+      taskId,
+      remindAt,
+    });
 
   return reminder;
 };
@@ -55,7 +89,9 @@ const createReminder = async (
 // Get All Reminders
 // ==========================================
 
-const getReminders = async (userId) => {
+const getReminders = async (
+  userId
+) => {
   const reminders =
     await Reminder.find({
       userId,
@@ -102,6 +138,10 @@ const getReminderById = async (
 // Update Reminder
 // ==========================================
 
+// ==========================================
+// Update Reminder
+// ==========================================
+
 const updateReminder = async (
   userId,
   reminderId,
@@ -120,13 +160,56 @@ const updateReminder = async (
     );
   }
 
-  // Don't allow modification of reminders
-  // that have already been sent.
-  if (reminder.status === "sent") {
+  // Don't allow modification after
+  // processing has started.
+  if (
+    reminder.status === "processing" ||
+    reminder.status === "sent"
+  ) {
     throw new AppError(
-      "Sent reminders cannot be modified",
+      "Processed reminders cannot be modified",
       400
     );
+  }
+
+  if (
+    reminder.status === "cancelled"
+  ) {
+    throw new AppError(
+      "Cancelled reminders cannot be modified",
+      400
+    );
+  }
+
+  // ------------------------------------------
+  // Prevent Duplicate Reminder
+  // ------------------------------------------
+
+  if (reminderData.remindAt) {
+    const existingReminder =
+      await Reminder.findOne({
+        _id: {
+          $ne: reminder._id,
+        },
+        userId,
+        taskId: reminder.taskId,
+        remindAt:
+          reminderData.remindAt,
+        status: {
+          $in: [
+            "scheduled",
+            "processing",
+            "sent",
+          ],
+        },
+      });
+
+    if (existingReminder) {
+      throw new AppError(
+        "A reminder already exists for this task at this time",
+        409
+      );
+    }
   }
 
   Object.assign(
@@ -160,9 +243,21 @@ const cancelReminder = async (
     );
   }
 
-  if (reminder.status === "sent") {
+  if (
+    reminder.status === "sent" ||
+    reminder.status === "processing"
+  ) {
     throw new AppError(
-      "Sent reminders cannot be cancelled",
+      "Processed reminders cannot be cancelled",
+      400
+    );
+  }
+
+  if (
+    reminder.status === "cancelled"
+  ) {
+    throw new AppError(
+      "Reminder is already cancelled",
       400
     );
   }

@@ -86,12 +86,16 @@ const updateCustomer = async (
 // Delete Customer
 // ==========================================
 
+// ==========================================
+// Delete Customer
+// ==========================================
+
 const deleteCustomer = async (
   userId,
   customerId
 ) => {
   const customer =
-    await Customer.findOneAndDelete({
+    await Customer.findOne({
       _id: customerId,
       userId,
     });
@@ -102,6 +106,23 @@ const deleteCustomer = async (
       404
     );
   }
+
+  // Prevent deleting a customer that
+  // still has tasks attached to them.
+  const taskCount =
+    await Task.countDocuments({
+      customerId: customer._id,
+      userId,
+    });
+
+  if (taskCount > 0) {
+    throw new AppError(
+      "Customer cannot be deleted while they have tasks",
+      409
+    );
+  }
+
+  await customer.deleteOne();
 
   return customer;
 };

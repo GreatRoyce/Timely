@@ -6,39 +6,109 @@ dotenv.config({
   quiet: true,
 });
 
-// Keep existing local environments working while standardizing on JWT_SECRET.
-if (!process.env.JWT_SECRET && process.env.SECRET) {
-  process.env.JWT_SECRET = process.env.SECRET;
+// Keep existing local environments working
+// while standardizing on JWT_SECRET.
+if (
+  !process.env.JWT_SECRET &&
+  process.env.SECRET
+) {
+  process.env.JWT_SECRET =
+    process.env.SECRET;
 }
 
 const env = {
-  nodeEnv: process.env.NODE_ENV || "development",
-  port: Number(process.env.PORT) || 5051,
-  dbString: process.env.DBSTRING,
-  jwtSecret: process.env.JWT_SECRET,
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "15m",
-  smtpHost: process.env.SMTP_HOST,
-  smtpPort: Number(process.env.SMTP_PORT || 587),
-  smtpSecure: process.env.SMTP_SECURE === "true",
-  smtpUser: process.env.SMTP_USER,
-  smtpPassword: process.env.SMTP_PASSWORD,
-  emailFrom: process.env.EMAIL_FROM,
-  clientUrl: process.env.CLIENT_URL,
-  corsOrigins: (process.env.CORS_ORIGINS || "")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  // ==========================================
+  // Application
+  // ==========================================
+
+  nodeEnv:
+    process.env.NODE_ENV ||
+    "development",
+
+  appTimezone:
+    process.env.APP_TIMEZONE ||
+    "Africa/Lagos",
+
+  port:
+    Number(process.env.PORT) ||
+    5051,
+
+  // ==========================================
+  // Database
+  // ==========================================
+
+  dbString:
+    process.env.DBSTRING,
+
+  // ==========================================
+  // Authentication
+  // ==========================================
+
+  jwtSecret:
+    process.env.JWT_SECRET,
+
+  jwtExpiresIn:
+    process.env.JWT_EXPIRES_IN ||
+    "15m",
+
+  // ==========================================
+  // Email / SMTP
+  // ==========================================
+
+  smtpHost:
+    process.env.SMTP_HOST,
+
+  smtpPort:
+    Number(process.env.SMTP_PORT || 587),
+
+  smtpSecure:
+    process.env.SMTP_SECURE === "true",
+
+  smtpUser:
+    process.env.SMTP_USER,
+
+  smtpPassword:
+    process.env.SMTP_PASSWORD,
+
+  emailFrom:
+    process.env.EMAIL_FROM,
+
+  // ==========================================
+  // Frontend
+  // ==========================================
+
+  clientUrl:
+    process.env.CLIENT_URL,
+
+  corsOrigins:
+    (process.env.CORS_ORIGINS || "")
+      .split(",")
+      .map((origin) =>
+        origin.trim()
+      )
+      .filter(Boolean),
 };
+
+// ==========================================
+// Environment Validation
+// ==========================================
 
 const assertServerEnv = () => {
   const missing = [];
 
-  if (!env.dbString) missing.push("DBSTRING");
-  if (!env.jwtSecret) missing.push("JWT_SECRET");
+  if (!env.dbString) {
+    missing.push("DBSTRING");
+  }
+
+  if (!env.jwtSecret) {
+    missing.push("JWT_SECRET");
+  }
 
   if (missing.length > 0) {
     throw new Error(
-      `Missing required environment variables: ${missing.join(", ")}`,
+      `Missing required environment variables: ${missing.join(
+        ", "
+      )}`
     );
   }
 };

@@ -1,76 +1,135 @@
 const { z } = require("zod");
 
+// ==========================================
+// Password
+// ==========================================
+
+const passwordSchema = z
+  .string()
+  .min(
+    8,
+    "Password must be at least 8 characters"
+  )
+  .max(
+    128,
+    "Password cannot exceed 128 characters"
+  );
+
+// ==========================================
+// Register
+// ==========================================
+
 const registerSchema = z
   .object({
     businessName: z
       .string()
       .trim()
-      .min(2, "Business name is required")
+      .min(
+        2,
+        "Business name is required"
+      )
       .max(100),
 
     ownerName: z
       .string()
       .trim()
-      .min(2, "Owner name is required")
+      .min(
+        2,
+        "Owner name is required"
+      )
       .max(100),
 
     email: z
       .string()
       .trim()
       .toLowerCase()
-      .email("Please provide a valid email address"),
+      .email(
+        "Please provide a valid email address"
+      ),
 
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters"),
+    password: passwordSchema,
 
     confirmPassword: z.string(),
   })
   .refine(
     (data) =>
-      data.password === data.confirmPassword,
+      data.password ===
+      data.confirmPassword,
     {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
+      message:
+        "Passwords do not match",
+      path: [
+        "confirmPassword",
+      ],
     }
   );
+
+// ==========================================
+// Login
+// ==========================================
 
 const loginSchema = z.object({
   email: z
     .string()
     .trim()
     .toLowerCase()
-    .email("Please provide a valid email address"),
+    .email(
+      "Please provide a valid email address"
+    ),
 
   password: z
     .string()
-    .min(1, "Password is required"),
+    .min(
+      1,
+      "Password is required"
+    ),
 });
 
-const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email("Please provide a valid email address"),
-});
+// ==========================================
+// Forgot Password
+// ==========================================
+
+const forgotPasswordSchema =
+  z.object({
+    email: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .email(
+        "Please provide a valid email address"
+      ),
+  });
+
+// ==========================================
+// Reset Password
+// ==========================================
 
 const resetPasswordSchema = z
   .object({
-    token: z.string().min(1),
-
-    password: z
+    token: z
       .string()
-      .min(8, "Password must be at least 8 characters"),
+      .trim()
+      .min(
+        1,
+        "Reset token is required"
+      ),
 
-    confirmPassword: z.string(),
+    password:
+      passwordSchema,
+
+    confirmPassword:
+      z.string(),
   })
   .refine(
     (data) =>
-      data.password === data.confirmPassword,
+      data.password ===
+      data.confirmPassword,
     {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
+      message:
+        "Passwords do not match",
+      path: [
+        "confirmPassword",
+      ],
     }
   );
 

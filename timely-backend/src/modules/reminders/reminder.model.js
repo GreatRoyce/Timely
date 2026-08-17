@@ -26,7 +26,9 @@ const reminderSchema = new mongoose.Schema(
       type: String,
       enum: [
         "scheduled",
+        "processing",
         "sent",
+        "failed",
         "cancelled",
       ],
       default: "scheduled",
@@ -36,6 +38,21 @@ const reminderSchema = new mongoose.Schema(
     sentAt: {
       type: Date,
       default: null,
+    },
+
+    failedAt: {
+      type: Date,
+      default: null,
+    },
+
+    errorMessage: {
+      type: String,
+      default: null,
+    },
+
+    attempts: {
+      type: Number,
+      default: 0,
     },
   },
   {

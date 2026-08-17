@@ -1,6 +1,7 @@
 const express = require("express");
 
 const protect = require("../../middleware/auth.middleware");
+const validateObjectId = require("../../middleware/validateObjectId");
 
 const {
   create,
@@ -19,12 +20,28 @@ router.post("/", create);
 
 router.get("/", getAll);
 
-router.get("/:id", getOne);
+router.get(
+  "/:id",
+  validateObjectId(),
+  getOne
+);
 
-router.patch("/:id", update);
+router.patch(
+  "/:id",
+  validateObjectId(),
+  update
+);
 
-router.patch("/:id/cancel", cancel);
+router.patch(
+  "/:id/cancel",
+  validateObjectId(),
+  cancel
+);
 
-router.delete("/:id", remove);
+router.delete(
+  "/:id",
+  validateObjectId(),
+  remove
+);
 
 module.exports = router;

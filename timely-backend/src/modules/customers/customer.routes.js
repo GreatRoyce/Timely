@@ -1,6 +1,7 @@
 const express = require("express");
 
 const protect = require("../../middleware/auth.middleware");
+const validateObjectId = require("../../middleware/validateObjectId");
 
 const {
   create,
@@ -12,17 +13,28 @@ const {
 
 const router = express.Router();
 
-// All customer routes require authentication
 router.use(protect);
 
 router.post("/", create);
 
 router.get("/", getAll);
 
-router.get("/:id", getOne);
+router.get(
+  "/:id",
+  validateObjectId(),
+  getOne
+);
 
-router.patch("/:id", update);
+router.patch(
+  "/:id",
+  validateObjectId(),
+  update
+);
 
-router.delete("/:id", remove);
+router.delete(
+  "/:id",
+  validateObjectId(),
+  remove
+);
 
 module.exports = router;
