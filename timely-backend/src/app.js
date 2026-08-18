@@ -97,6 +97,13 @@ if (env.nodeEnv !== "test") {
 // Routes
 // ==========================================
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Timely API is running",
+  });
+});
+
 app.use(
   "/api/v1/auth",
   authRoutes

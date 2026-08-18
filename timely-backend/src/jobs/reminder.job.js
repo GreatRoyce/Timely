@@ -44,7 +44,7 @@ const processDueReminders = async () => {
               remindAt: 1,
             },
 
-            new: true,
+            returnDocument: "after",
           }
         );
 
