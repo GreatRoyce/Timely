@@ -46,10 +46,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="h-screen ">
-      <div className="mx-auto flex mt-16 w-3/5 h-[86vh] ">
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-0 lg:py-16">
+      <div className="mx-auto w-full max-w-md xl:grid xl:min-h-[86vh] xl:w-2/3 xl:max-w-5xl xl:grid-cols-2 xl:gap-10">
         {/* left */}
-        <div className="h-full w-1/2 mx-10 rounded-b-md bg-gradient-to-br from-primary-100/40 via-primary/10 to-background p-8 shadow-xl shadow-primary/5">
+        <div className="relative hidden h-full rounded-b-md bg-gradient-to-br from-primary-100/40 via-primary/10 to-background p-8 shadow-xl shadow-primary/5 xl:block">
           {/* Badge */}
           <div className="flex w-fit items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-primary">
             <FaShop size={12} />
@@ -157,7 +157,7 @@ const RegisterForm = () => {
         </div>
 
         {/* right */}
-        <div className="h-full w-1/2 p-4 rounded-t-md border-2 border-primary/30 ">
+        <div className="w-full rounded-t-md border-2 border-primary/30 p-4 sm:p-6 xl:h-full xl:p-4">
           <div className="items-center justify-center text-center flex flex-col">
             <div className="flex items-center justify-start">
               <Logo className="h-5" />
@@ -172,7 +172,7 @@ const RegisterForm = () => {
           {/* form */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col space-y-2 justify-start px-2 pt-6"
+            className="flex flex-col justify-start space-y-2 px-0 pt-6 sm:px-2"
           >
             <div className="flex flex-col space-x-1">
               <p className="opacity-60">Business Name</p>
@@ -263,7 +263,7 @@ const RegisterForm = () => {
               </Button>
             </div>
 
-            <div className="flex mx-auto pl-1 gap-1 ">
+            <div className="mx-auto flex flex-wrap justify-center gap-1 pl-1 text-sm sm:text-base">
               <p className="opacity-60">Already have an account?</p>
 
               <Link to="/login">

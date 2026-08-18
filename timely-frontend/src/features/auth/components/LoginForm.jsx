@@ -31,10 +31,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="h-screen ">
-      <div className="mx-auto flex mt-16 w-3/5 h-3/4 ">
+    <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-0 lg:py-16">
+      <div className="mx-auto w-full max-w-md xl:grid xl:h-[75vh] xl:w-2/3 xl:max-w-5xl xl:grid-cols-2 xl:gap-10">
         {/* left */}
-        <div className="h-full bg-gradient-to-r from-primary/20 to-primary-200/20 w-1/2 mx-10 rounded-b-md p-6">
+        <div className="hidden h-full rounded-b-md bg-gradient-to-r from-primary/20 to-primary-200/20 p-6 xl:block">
           <div className="flex items-center justify-start">
             <Logo className="h-14" />
             <H5>Timely</H5>
@@ -59,7 +59,7 @@ const LoginForm = () => {
         </div>
 
         {/* right */}
-        <div className="h-full w-1/2 p-4 rounded-t-md border-2 border-primary/30 ">
+        <div className="w-full rounded-t-md border-2 border-primary/30 p-4 sm:p-6 xl:h-full xl:p-4">
           <div className="items-center justify-center text-center space-y-2 flex flex-col">
             <div className="flex items-center justify-start">
               <Logo className="h-5" />
@@ -74,7 +74,7 @@ const LoginForm = () => {
           {/* form */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col space-y-6 justify-start px-2 pt-6"
+            className="flex flex-col justify-start space-y-6 px-0 pt-6 sm:px-2"
           >
             <div className="flex flex-col space-x-1">
               <p className="opacity-60">Email Address</p>
@@ -112,7 +112,7 @@ const LoginForm = () => {
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
-            <div className="flex items-center pl-1 gap-4 justify-between ">
+            <div className="flex flex-col items-start gap-3 pl-1 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex space-x-3">
                 <input type="checkbox" />
                 <p className="opacity-60">Remember me</p>
@@ -131,7 +131,7 @@ const LoginForm = () => {
               </Button>
             </div>
 
-            <div className="flex items-center pl-1 gap-1 ">
+            <div className="flex flex-wrap items-center justify-center gap-1 pl-1 text-sm sm:justify-start sm:text-base">
               <p className="opacity-60">Don't have an account?</p>
 
               <Link to="/register">
