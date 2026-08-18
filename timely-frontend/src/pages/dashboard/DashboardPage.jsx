@@ -12,7 +12,7 @@ const DashboardPage = () => {
     <section className="min-h-full bg-primary/5 p-4 sm:p-6 lg:p-8 xl:pr-80">
       <div className="mb-4 sm:hidden">
         <Button fullWidth onClick={openCreateOrder} size="sm">
-          NEW ORDER +
+          NEW TASK +
         </Button>
       </div>
       <DashboardStats />

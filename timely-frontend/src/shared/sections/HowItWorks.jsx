@@ -8,7 +8,7 @@ const HowItWorks = () => {
         <div className="mx-auto max-w-3xl space-y-4 text-center">
           <H3 className="text-2xl sm:text-3xl">How It Works</H3>
           <H4 className="text-foreground/80 text-lg font-normal mt-2 ">
-            Four steps to absolute order management clarity
+            Four steps to absolute task management clarity
           </H4>
         </div>
 

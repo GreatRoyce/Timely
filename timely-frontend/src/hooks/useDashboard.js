@@ -1,51 +1,37 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { DATA_CHANGED_EVENT } from "../context/OrdersContext";
+import { getApiErrorMessage } from "../lib/apiError";
+import { getDashboardOverview } from "../lib/dashboardApi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5050/api/v1";
-
-const useDashboard = () => {
+export const useDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
     try {
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("accessToken");
-
-      const response = await fetch(`${API_URL}/dashboard`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to load dashboard");
-      }
-
-      setDashboard(data.data);
-    } catch (error) {
-      setError(error.message);
+      setDashboard(await getDashboardOverview());
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, "Unable to load dashboard."));
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchDashboard();
   }, []);
 
-  return {
-    dashboard,
-    loading,
-    error,
-    refetch: fetchDashboard,
-  };
+  useEffect(() => {
+    const timeoutId = window.setTimeout(fetchDashboard, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchDashboard]);
+
+  useEffect(() => {
+    window.addEventListener(DATA_CHANGED_EVENT, fetchDashboard);
+    return () => window.removeEventListener(DATA_CHANGED_EVENT, fetchDashboard);
+  }, [fetchDashboard]);
+
+  return { dashboard, loading, error, refetch: fetchDashboard };
 };
 
 export default useDashboard;

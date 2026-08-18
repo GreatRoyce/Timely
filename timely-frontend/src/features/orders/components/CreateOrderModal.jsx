@@ -20,6 +20,7 @@ const CreateOrderModal = () => {
   const { isCreateOrderOpen, closeCreateOrder, addOrder } = useOrders();
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateField = (event) => {
     const { name, value } = event.target;
@@ -33,21 +34,42 @@ const CreateOrderModal = () => {
     closeCreateOrder();
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!form.customerName || !form.phone || !form.item || !form.dueDate || !form.dueTime) {
+    if (
+      !form.customerName ||
+      !form.phone ||
+      !form.item ||
+      !form.dueDate ||
+      !form.dueTime
+    ) {
       setError("Please complete all required fields.");
       return;
     }
 
-    addOrder(form);
-    setForm(initialForm);
-    setError("");
+    const taskDeadline = new Date(`${form.dueDate}T${form.dueTime}`);
+
+    if (taskDeadline.getTime() <= Date.now()) {
+      setError("Task deadline must be in the future.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await addOrder(form);
+      setForm(initialForm);
+      setError("");
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Modal isOpen={isCreateOrderOpen} onClose={handleClose} title="Add New Order">
+    <Modal isOpen={isCreateOrderOpen} onClose={handleClose} title="Add New Task">
       <form className="space-y-4 p-5" onSubmit={handleSubmit}>
         <div className="grid gap-4 sm:grid-cols-2">
           <Input
@@ -56,7 +78,7 @@ const CreateOrderModal = () => {
             label="Customer name *"
             name="customerName"
             onChange={updateField}
-            placeholder="e.g. Sarah Adelaja"
+            placeholder="Enter customer name"
             value={form.customerName}
           />
           <Input
@@ -72,10 +94,10 @@ const CreateOrderModal = () => {
 
         <Input
           id="item"
-          label="Order item *"
+          label="Task title *"
           name="item"
           onChange={updateField}
-          placeholder="What is being ordered?"
+          placeholder="What needs to be done?"
           value={form.item}
         />
 
@@ -104,10 +126,17 @@ const CreateOrderModal = () => {
             onChange={updateField}
             value={form.priority}
           >
+            <option>Low</option>
             <option>Normal</option>
             <option>High</option>
-            <option>Urgent</option>
           </Select>
+        </div>
+
+        <div className="rounded-sm border border-primary/20 bg-primary/5 p-3 text-sm">
+          <p className="font-semibold text-foreground">Automatic reminder included</p>
+          <p className="mt-1 text-muted-foreground">
+            Timely will remind you at the task deadline. You can change or cancel it later from the Tasks page.
+          </p>
         </div>
 
         <Textarea
@@ -125,7 +154,9 @@ const CreateOrderModal = () => {
           <Button onClick={handleClose} size="sm" type="button" variant="secondary">
             Cancel
           </Button>
-          <Button size="sm" type="submit">Add Order</Button>
+          <Button disabled={isSubmitting} size="sm" type="submit">
+            {isSubmitting ? "Adding..." : "Add Task"}
+          </Button>
         </div>
       </form>
     </Modal>

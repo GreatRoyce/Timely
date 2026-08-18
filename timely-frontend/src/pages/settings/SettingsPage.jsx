@@ -13,7 +13,7 @@ const SettingsPage = () => {
         <dl className="grid gap-4 text-md sm:grid-cols-2">
           <div>
             <dt className="text-muted-foreground">Full name</dt>
-            <dd className="mt-1 font-semibold">{user?.fullName}</dd>
+            <dd className="mt-1 font-semibold">{user?.ownerName || user?.fullName}</dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Business</dt>

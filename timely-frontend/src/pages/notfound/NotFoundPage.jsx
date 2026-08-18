@@ -50,7 +50,7 @@ const NotFoundPage = () => {
 
         <div className="mt-10 border-t border-border pt-5">
           <p className="text-xs tracking-wide text-muted-foreground">
-            Timely • Organize orders. Deliver on time.
+            Timely • Organize tasks. Finish on time.
           </p>
         </div>
       </div>

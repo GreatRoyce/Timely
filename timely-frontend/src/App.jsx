@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import LoginForm from "./features/auth/components/LoginForm";
 import RegisterForm from "./features/auth/components/RegisterForm";
+import ForgotPasswordForm from "./features/auth/components/ForgotPasswordForm";
+import ResetPasswordForm from "./features/auth/components/ResetPasswordForm";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import OrdersPage from "./pages/orders/OrdersPage";
 import SettingsPage from "./pages/settings/SettingsPage";
@@ -54,6 +56,22 @@ function App() {
               </PublicRoute>
             }
           />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPasswordForm />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPasswordForm />
+              </PublicRoute>
+            }
+          />
           <Route element={<ProtectedRoute />}>
             <Route
               path="/dashboard"
@@ -64,7 +82,8 @@ function App() {
               }
             >
               <Route index element={<DashboardPage />} />
-              <Route path="orders" element={<OrdersPage />} />
+              <Route path="tasks" element={<OrdersPage />} />
+              <Route path="orders" element={<Navigate to="/dashboard/tasks" replace />} />
               <Route path="customers" element={<CustomersPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />

@@ -9,7 +9,7 @@ const Features = () => {
         <H3 className="text-2xl sm:text-3xl">Everything you need to stay on schedule</H3>
         <H4 className="text-foreground/80 text-lg font-normal mt-2 ">
           A streamlined toolkit designed specifically to eliminate forgotten
-          deadlines and messy order books.
+          deadlines and messy task lists.
         </H4>
       </div>
       <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">

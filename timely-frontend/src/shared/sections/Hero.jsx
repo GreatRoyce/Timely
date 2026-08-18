@@ -25,9 +25,9 @@ const Hero = () => (
         </H1>
 
         <div className="mt-5 max-w-xl space-y-2 text-lg leading-relaxed text-foreground/75 sm:text-xl">
-          <p>Stop juggling notebooks, chats, and forgotten orders.</p>
+          <p>Stop juggling notebooks, chats, and forgotten tasks.</p>
           <p>
-            Timely brings your orders, customers, reminders, and deadlines into
+            Timely brings your tasks, customers, reminders, and deadlines into
             one intelligent workspace, so nothing slips through the cracks.
           </p>
         </div>
@@ -57,7 +57,7 @@ const Hero = () => (
 
       <div className="rounded-xl border border-primary/20 bg-primary/10 p-2 shadow-xl sm:p-3">
         <img
-          alt="Timely order management dashboard"
+          alt="Timely task management dashboard"
           className="h-auto w-full rounded-lg object-cover"
           src="/images/timely-dashboard.png"
         />

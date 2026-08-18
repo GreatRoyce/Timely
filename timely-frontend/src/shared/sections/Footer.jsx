@@ -23,8 +23,8 @@ const Footer = () => {
             <H5>Timely</H5>
           </div>
           <p className="max-w-md text-foreground/80">
-            Organize orders, manage customers, automate reminders, and deliver
-            every order on time.
+            Organize tasks, manage customers, automate reminders, and complete
+            every task on time.
           </p>
           <div className="mt-4 flex items-center justify-start space-x-6">
             <FaFacebook

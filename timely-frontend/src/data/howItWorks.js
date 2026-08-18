@@ -9,7 +9,7 @@ export const HowItWorksData = [
   {
     id: 1,
     icon: PiNotePencilBold,
-    title: "1: Create Order",
+    title: "1: Create Task",
     description: "Log the details and requirements."
   },
   {

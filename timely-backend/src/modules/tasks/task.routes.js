@@ -52,7 +52,7 @@ router.patch(
   cancel
 );
 
-router.delete(
+router.delete(~
   "/:id",
   validateObjectId(),
   remove

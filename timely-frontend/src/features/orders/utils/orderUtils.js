@@ -1,11 +1,18 @@
-export const ORDER_STATUSES = ["New", "In Progress", "Ready", "Completed"];
+export const ORDER_STATUSES = ["New", "In Progress", "Completed", "Cancelled"];
+
+const ORDER_WORKFLOW = ["New", "In Progress", "Completed"];
 
 const LEGACY_STATUS_MAP = {
   "Due Now": "In Progress",
   "Due in 15m": "In Progress",
   Overdue: "In Progress",
   Received: "New",
-  "Ready for Pickup": "Ready",
+  "Ready for Pickup": "In Progress",
+  Ready: "In Progress",
+  pending: "New",
+  in_progress: "In Progress",
+  completed: "Completed",
+  cancelled: "Cancelled",
 };
 
 export const normalizeOrderStatus = (status) => {
@@ -31,18 +38,17 @@ export const sortByDeadline = (orders) =>
   });
 
 export const getNextOrderStatus = (status) => {
-  const currentIndex = ORDER_STATUSES.indexOf(normalizeOrderStatus(status));
-  return currentIndex >= 0 && currentIndex < ORDER_STATUSES.length - 1
-    ? ORDER_STATUSES[currentIndex + 1]
+  const currentIndex = ORDER_WORKFLOW.indexOf(normalizeOrderStatus(status));
+  return currentIndex >= 0 && currentIndex < ORDER_WORKFLOW.length - 1
+    ? ORDER_WORKFLOW[currentIndex + 1]
     : null;
 };
 
 export const getStatusActionLabel = (status) => {
   const nextStatus = getNextOrderStatus(status);
   const labels = {
-    "In Progress": "Start order",
-    Ready: "Mark ready",
-    Completed: "Complete order",
+    "In Progress": "Start task",
+    Completed: "Complete task",
   };
 
   return nextStatus ? labels[nextStatus] : null;
@@ -118,7 +124,7 @@ export const formatOrderDeadline = (order, now = new Date()) => {
 };
 
 export const isActiveOrder = (order) =>
-  normalizeOrderStatus(order.status) !== "Completed";
+  !["Completed", "Cancelled"].includes(normalizeOrderStatus(order.status));
 
 export const isAttentionOrder = (order, now = new Date()) => {
   if (!isActiveOrder(order)) return false;

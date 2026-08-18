@@ -21,18 +21,21 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const result = register({
+    setIsSubmitting(true);
+    const result = await register({
       businessName,
       fullName,
       email,
       password,
       confirmPassword,
     });
+    setIsSubmitting(false);
 
     if (!result.success) {
       setError(result.error);
@@ -57,23 +60,23 @@ const RegisterForm = () => {
 
           {/* Heading */}
           <div className="flex flex-col space-y-4 pt-5">
-            <H2 className="leading-10">Start delivering every order on time</H2>
+            <H2 className="leading-10">Start completing every task on time</H2>
 
             <p className="text-md font-light leading-relaxed opacity-70">
-              Join thousands of vendors, tailors, and boutiques managing orders,
+              Join thousands of vendors, tailors, and boutiques managing tasks,
               customers, and deadlines from one simple workspace.
             </p>
           </div>
 
           {/* Illustration */}
           <div className="relative mx-auto h-80 w-11/12 rounded-xl mt-4 backdrop-blur-sm">
-            {/* Today's Orders */}
+            {/* Today's Tasks */}
             <div className="absolute left-0 top-2 h-20 w-44 -rotate-6 rounded-md border border-white/50 bg-white/70 p-3 shadow-md backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <div className="mb-2 flex items-center justify-between text-sm font-semibold">
-                <p className="text-foreground/70">Today's Orders</p>
+                <p className="text-foreground/70">Today's Tasks</p>
 
-                <p className="flex h-6 w-6 items-center justify-center rounded-full bg-success text-success-foreground">
-                  12
+                <p className="flex h-6 items-center justify-center rounded-full bg-success px-2 text-xs text-success-foreground">
+                  Live
                 </p>
               </div>
 
@@ -110,10 +113,12 @@ const RegisterForm = () => {
 
                 <div className="flex flex-col">
                   <p className="text-sm font-semibold text-foreground">
-                    Order #4049 is overdue
+                    Deadline reminders stay visible
                   </p>
 
-                  <p className="text-xs text-muted-foreground">2 minutes ago</p>
+                  <p className="text-xs text-muted-foreground">
+                    Automatic task alerts
+                  </p>
                 </div>
               </div>
             </div>
@@ -127,7 +132,7 @@ const RegisterForm = () => {
               </div>
 
               <p className="leading-tight text-foreground">
-                Smart Order Reminders
+                Smart Task Reminders
               </p>
             </div>
 
@@ -137,7 +142,7 @@ const RegisterForm = () => {
               </div>
 
               <p className="leading-tight text-foreground">
-                Fast Order Tracking
+                Fast Task Tracking
               </p>
             </div>
 
@@ -253,8 +258,8 @@ const RegisterForm = () => {
             {error && <p className="text-sm text-red-600">{error}</p>}
 
             <div className="flex items-center pl-1 pt-2 gap-4 justify-between ">
-              <Button variant="primary" type="submit" className="w-full">
-                Create Account
+              <Button disabled={isSubmitting} variant="primary" type="submit" className="w-full">
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </Button>
             </div>
 

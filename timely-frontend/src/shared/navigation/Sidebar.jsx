@@ -13,7 +13,7 @@ const sidebarNav =
 
 const navItems = [
   { label: "Home", path: "/dashboard", icon: CiGrid42, end: true },
-  { label: "Orders", path: "/dashboard/orders", icon: PiNotepadBold },
+  { label: "Tasks", path: "/dashboard/tasks", icon: PiNotepadBold },
   { label: "Customers", path: "/dashboard/customers", icon: IoMdPeople },
   { label: "Settings", path: "/dashboard/settings", icon: CiSettings },
 ];

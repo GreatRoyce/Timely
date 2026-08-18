@@ -8,16 +8,16 @@ export const FeaturesData = [
   {
     id: 1,
     icon: PiNotePencilBold,
-    title: "Order Management",
+    title: "Task Management",
     description:
-      "Create, update, and track every customer order from request to delivery in one place.",
+      "Create, update, and track every customer task from request to completion in one place.",
   },
   {
     id: 2,
     icon: PiUsersBold,
     title: "Customer Management",
     description:
-      "Keep customer details, measurements, order history, and contact information organized and easy to find.",
+      "Keep customer details, measurements, task history, and contact information organized and easy to find.",
   },
   {
     id: 3,

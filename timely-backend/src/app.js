@@ -32,6 +32,10 @@ const reminderRoutes = require(
   "./modules/reminders/reminder.routes"
 );
 
+const notificationRoutes = require(
+  "./modules/notifications/notification.routes"
+);
+
 const app = express();
 
 // ==========================================
@@ -116,6 +120,11 @@ app.use(
 app.use(
   "/api/v1/reminders",
   reminderRoutes
+);
+
+app.use(
+  "/api/v1/notifications",
+  notificationRoutes
 );
 
 // ==========================================

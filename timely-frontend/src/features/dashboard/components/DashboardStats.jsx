@@ -8,7 +8,7 @@ import {
 import { useDashboard } from "../../../hooks/useDashboard";
 
 const DashboardStats = () => {
-  const { dashboard, loading } = useDashboard();
+  const { dashboard, loading, error, refetch } = useDashboard();
 
   const summary = dashboard?.summary;
 
@@ -42,6 +42,17 @@ const DashboardStats = () => {
       overview: "Scheduled task reminders",
     },
   ];
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-between gap-4 rounded-sm border border-danger/20 bg-danger/5 p-3 text-sm text-danger">
+        <span>{error}</span>
+        <button className="font-semibold underline" onClick={refetch} type="button">
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section

@@ -19,7 +19,7 @@ const RecentActivity = () => {
         <h2 className="text-lg font-semibold opacity-80">Recent Activity</h2>
         <Link
           className="text-md font-medium text-primary hover:underline"
-          to="/dashboard/orders"
+          to="/dashboard/tasks"
         >
           View all
         </Link>
@@ -29,7 +29,7 @@ const RecentActivity = () => {
         <table className="w-full min-w-[620px] border-collapse text-left">
           <thead>
             <tr className="border-b border-border bg-foreground/5 text-sm uppercase tracking-wide text-muted-foreground">
-              <th className="px-4 py-3">Order</th>
+              <th className="px-4 py-3">Task</th>
               <th className="px-4 py-3">Customer</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Due</th>
@@ -42,7 +42,7 @@ const RecentActivity = () => {
                 key={order.id}
                 className="border-b border-border transition-colors last:border-b-0 hover:bg-muted/40"
               >
-                <td className="px-4 py-4 font-medium">#{order.id}</td>
+                <td className="px-4 py-4 font-medium">#{order.displayId}</td>
                 <td className="px-4 py-4">{order.customerName}</td>
                 <td className="px-4 py-4">
                   <OrderStatusBadge status={order.status} />
@@ -53,7 +53,7 @@ const RecentActivity = () => {
                 <td className="px-4 py-4 text-center">
                   <Link
                     className="font-semibold text-primary hover:underline"
-                    to="/dashboard/orders"
+                    to="/dashboard/tasks"
                   >
                     View
                   </Link>
@@ -66,7 +66,7 @@ const RecentActivity = () => {
                   className="px-4 py-10 text-center text-muted-foreground"
                   colSpan="5"
                 >
-                  No order activity yet.
+                  No task activity yet.
                 </td>
               </tr>
             )}

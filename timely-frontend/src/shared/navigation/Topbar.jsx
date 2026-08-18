@@ -11,7 +11,7 @@ import { useOrders } from "../../hooks/useOrders";
 const Topbar = ({ onMenuOpen }) => {
   const { user } = useAuth();
   const { openCreateOrder } = useOrders();
-  const firstName = user?.fullName?.split(" ")[0] || "Alex";
+  const firstName = (user?.ownerName || user?.fullName)?.split(" ")[0] || "there";
 
   return (
     <header className="fixed left-0 right-0 top-0 z-30 h-16 border-b border-border bg-white shadow-sm md:left-56">
@@ -29,7 +29,7 @@ const Topbar = ({ onMenuOpen }) => {
         </div>
         <div className="flex items-center justify-center gap-2">
           <Button className="hidden sm:inline-flex" onClick={openCreateOrder} size="sm">
-            NEW ORDER +
+            NEW TASK +
           </Button>
           <SearchInput />
           <Link aria-label="Notifications" to="/dashboard/notifications">

@@ -14,12 +14,15 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const result = login({ email, password });
+    setIsSubmitting(true);
+    const result = await login({ email, password });
+    setIsSubmitting(false);
     if (!result.success) {
       setError(result.error);
       return;
@@ -38,10 +41,10 @@ const LoginForm = () => {
           </div>
           <div className="flex flex-col justify-center space-y-3 pt-4">
             <H3 className="text-4xl text-center leading-9">
-              Stay ahead of every order
+              Stay ahead of every task
             </H3>
             <p className="opacity-70 text-lg">
-              Built to simplify order management, automate reminders, and help
+              Built to simplify task management, automate reminders, and help
               small businesses grow with confidence.
             </p>
           </div>
@@ -64,7 +67,7 @@ const LoginForm = () => {
             </div>
             <p>Welcome back</p>
             <p className="text-sm">
-              Sign in to continue managing your customer orders.{" "}
+              Sign in to continue managing your customer tasks.{" "}
             </p>
           </div>
 
@@ -109,27 +112,22 @@ const LoginForm = () => {
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
-            <p className="text-xs opacity-70">
-              Demo login: <span className="font-medium">demo@timely.com</span> /{" "}
-              <span className="font-medium">password123</span>
-            </p>
-
             <div className="flex items-center pl-1 gap-4 justify-between ">
               <div className="flex space-x-3">
                 <input type="checkbox" />
                 <p className="opacity-60">Remember me</p>
               </div>
-              <button
+              <Link
                 className="text-blue-700 opacity-60 hover:opacity-100"
-                type="button"
+                to="/forgot-password"
               >
                 Forgot Password?
-              </button>
+              </Link>
             </div>
 
             <div className="flex items-center pl-1 gap-4 justify-between ">
-              <Button variant="primary" type="submit" className="w-full">
-                Sign In
+              <Button disabled={isSubmitting} variant="primary" type="submit" className="w-full">
+                {isSubmitting ? "Signing In..." : "Sign In"}
               </Button>
             </div>
 

@@ -4,8 +4,8 @@ import { normalizeOrderStatus } from "../utils/orderUtils";
 const statusStyles = {
   New: "bg-info/10 text-info",
   "In Progress": "bg-warning/10 text-warning",
-  Ready: "bg-success/10 text-success",
   Completed: "bg-foreground/10 text-muted-foreground",
+  Cancelled: "bg-danger/10 text-danger",
 };
 
 const OrderStatusBadge = ({ status }) => {

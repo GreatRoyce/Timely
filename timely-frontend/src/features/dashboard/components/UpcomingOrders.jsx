@@ -24,11 +24,11 @@ const UpcomingOrders = () => {
       <div className="flex h-full max-h-[32rem] flex-col rounded-md border border-primary/20 bg-white shadow-sm xl:max-h-none">
         <div className="flex items-center justify-between border-b border-border px-4 py-4">
           <div>
-            <h2 className="text-lg font-semibold">Upcoming Orders</h2>
+            <h2 className="text-lg font-semibold">Upcoming Tasks</h2>
             <p className="text-sm text-muted-foreground">Next scheduled deadlines</p>
           </div>
           <button
-            aria-label="Add new order"
+            aria-label="Add new task"
             className="rounded-full border border-primary/20 bg-primary/10 p-2 text-primary transition-all hover:scale-105 hover:bg-primary/20 active:scale-95"
             onClick={openCreateOrder}
             type="button"
@@ -49,7 +49,7 @@ const UpcomingOrders = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate text-md font-semibold text-foreground/80">
-                    {order.customerName} · {order.item || "Order item"}
+                    {order.customerName} · {order.item || "Task"}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     {formatOrderDeadline(order)}
@@ -59,7 +59,7 @@ const UpcomingOrders = () => {
             ))
           ) : (
             <div className="px-4 py-10 text-center">
-              <p className="font-semibold text-foreground/80">No upcoming orders</p>
+              <p className="font-semibold text-foreground/80">No upcoming tasks</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 New deadlines will appear here.
               </p>
@@ -70,9 +70,9 @@ const UpcomingOrders = () => {
         <div className="border-t border-border p-4 text-center text-sm">
           <Link
             className="font-semibold tracking-wide text-primary transition-colors hover:underline"
-            to="/dashboard/orders"
+            to="/dashboard/tasks"
           >
-            SEE ALL ORDERS
+            SEE ALL TASKS
           </Link>
         </div>
       </div>

@@ -12,7 +12,7 @@ import {
 } from "../../orders/utils/orderUtils";
 
 const AttentionOrders = () => {
-  const { orders, advanceOrderStatus } = useOrders();
+  const { orders, actionOrderId, advanceOrderStatus } = useOrders();
   const attentionOrders = sortByDeadline(
     orders.filter((order) => isAttentionOrder(order)),
   );
@@ -24,7 +24,7 @@ const AttentionOrders = () => {
         <H5 className="opacity-80">Needs Your Attention</H5>
         <Link
           className="shrink-0 text-md font-semibold text-primary hover:underline"
-          to="/dashboard/orders"
+          to="/dashboard/tasks"
         >
           View all{attentionOrders.length ? ` (${attentionOrders.length})` : ""}
         </Link>
@@ -76,14 +76,14 @@ const AttentionOrders = () => {
                     isUrgent ? "text-danger" : "text-muted-foreground"
                   }`}
                 >
-                  Order #{order.id}
+                  Task #{order.displayId}
                 </p>
                 <h3 className="mt-1 text-md font-semibold">{order.customerName}</h3>
                 <hr className="my-3 border-border" />
 
                 <div className="flex items-center justify-between gap-3">
                   <span className="truncate text-md text-foreground/80">
-                    {order.item || "Order item"}
+                    {order.item || "Task"}
                   </span>
                   <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-muted px-2 text-xs font-semibold">
                     1
@@ -92,7 +92,7 @@ const AttentionOrders = () => {
 
                 <div className="mt-auto pt-5">
                   <Button
-                    disabled={!actionLabel}
+                    disabled={!actionLabel || actionOrderId === order.id}
                     fullWidth
                     onClick={() => advanceOrderStatus(order.id)}
                     size="sm"
@@ -109,7 +109,7 @@ const AttentionOrders = () => {
         <div className="rounded-md border border-dashed border-primary/20 bg-white px-5 py-10 text-center">
           <p className="font-semibold text-foreground/80">You are all caught up.</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            No active orders are due within the next two hours.
+            No active tasks are due within the next two hours.
           </p>
         </div>
       )}

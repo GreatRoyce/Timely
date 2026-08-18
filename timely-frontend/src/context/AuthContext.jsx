@@ -1,93 +1,63 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AuthContext from "./auth-context";
-
-const DEFAULT_USERS = [
-  {
-    email: "demo@timely.com",
-    password: "password123",
-    fullName: "Timely Demo",
-    businessName: "Timely Co",
-  },
-];
-
-const STORAGE_KEY = "timely-auth-users";
-const AUTH_USER_KEY = "timely-auth-current-user";
-
-const loadPersistedUsers = () => {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (!stored) return DEFAULT_USERS;
-    const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed : DEFAULT_USERS;
-  } catch {
-    return DEFAULT_USERS;
-  }
-};
-
-const saveUsers = (users) => {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-  } catch {
-    // ignore
-  }
-};
+import {
+  AUTH_EXPIRED_EVENT,
+  AUTH_USER_KEY,
+  clearStoredSession,
+  getAccessToken,
+} from "../lib/api";
+import { loginAccount, logoutAccount, registerAccount } from "../lib/authApi";
+import { getApiErrorMessage } from "../lib/apiError";
 
 const loadCurrentUser = () => {
   try {
     const stored = window.localStorage.getItem(AUTH_USER_KEY);
-    if (!stored) return null;
-    return JSON.parse(stored);
+    return stored ? JSON.parse(stored) : null;
   } catch {
     return null;
   }
 };
 
 const saveCurrentUser = (user) => {
-  try {
-    if (!user) {
-      window.localStorage.removeItem(AUTH_USER_KEY);
-      return;
-    }
+  if (user) {
     window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-  } catch {
-    // ignore
+  } else {
+    window.localStorage.removeItem(AUTH_USER_KEY);
   }
 };
 
 export const AuthProvider = ({ children }) => {
-  const [users, setUsers] = useState(loadPersistedUsers);
   const [user, setUser] = useState(loadCurrentUser);
-  const isAuthenticated = Boolean(user);
-
-  useEffect(() => {
-    saveUsers(users);
-  }, [users]);
+  const isAuthenticated = Boolean(user && getAccessToken());
 
   useEffect(() => {
     saveCurrentUser(user);
   }, [user]);
 
-  const login = useCallback(({ email, password }) => {
+  useEffect(() => {
+    const handleExpiredSession = () => setUser(null);
+    window.addEventListener(AUTH_EXPIRED_EVENT, handleExpiredSession);
+    return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleExpiredSession);
+  }, []);
+
+  const login = useCallback(async ({ email, password }) => {
     if (!email || !password) {
       return { success: false, error: "Please provide email and password." };
     }
 
-    const matchedUser = users.find(
-      (existing) => existing.email.toLowerCase() === email.toLowerCase(),
-    );
-    if (!matchedUser || matchedUser.password !== password) {
-      return { success: false, error: "Invalid email or password." };
+    try {
+      const authenticatedUser = await loginAccount({ email, password });
+      setUser(authenticatedUser);
+      return { success: true, user: authenticatedUser };
+    } catch (error) {
+      return {
+        success: false,
+        error: getApiErrorMessage(error, "Unable to sign in."),
+      };
     }
+  }, []);
 
-    setUser({
-      email: matchedUser.email,
-      fullName: matchedUser.fullName,
-      businessName: matchedUser.businessName,
-    });
-    return { success: true };
-  }, [users]);
-
-  const register = useCallback(({
+  const register = useCallback(async ({
     businessName,
     fullName,
     email,
@@ -102,30 +72,36 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: "Passwords do not match." };
     }
 
-    const emailExists = users.some(
-      (existing) => existing.email.toLowerCase() === email.toLowerCase(),
-    );
-    if (emailExists) {
+    try {
+      await registerAccount({
+        businessName,
+        ownerName: fullName,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      const authenticatedUser = await loginAccount({ email, password });
+      setUser(authenticatedUser);
+      return { success: true, user: authenticatedUser };
+    } catch (error) {
       return {
         success: false,
-        error: "An account already exists with this email.",
+        error: getApiErrorMessage(error, "Unable to create your account."),
       };
     }
+  }, []);
 
-    const newUser = { email, password, fullName, businessName };
-    setUsers((currentUsers) => [...currentUsers, newUser]);
-    setUser({ email, fullName, businessName });
-    return { success: true };
-  }, [users]);
-
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    const logoutRequest = logoutAccount().catch(() => undefined);
+    clearStoredSession();
     setUser(null);
-    saveCurrentUser(null);
+    await logoutRequest;
   }, []);
 
   const value = useMemo(
-    () => ({ users, user, isAuthenticated, login, register, logout }),
-    [users, user, isAuthenticated, login, register, logout],
+    () => ({ user, isAuthenticated, login, register, logout }),
+    [user, isAuthenticated, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
