@@ -20,7 +20,7 @@ const startServer = async () => {
 
     app.listen(env.port, () => {
       console.log(
-        `Timely API running on http://localhost:${env.port}`
+        `Timely API running on port ${env.port}`
       );
     });
   } catch (error) {
