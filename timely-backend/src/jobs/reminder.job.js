@@ -157,14 +157,15 @@ const processDueReminders = async () => {
 
 const startReminderJob = () => {
   cron.schedule(
-    "* * * * *",
+    "*/10 * * * * *",
     async () => {
       await processDueReminders();
-    }
+    },
+    { noOverlap: true }
   );
 
   console.log(
-    "Reminder job started. Checking every minute."
+    "Reminder job started. Checking every 10 seconds."
   );
 };
 

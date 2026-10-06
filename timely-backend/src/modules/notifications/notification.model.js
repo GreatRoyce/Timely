@@ -31,7 +31,7 @@ const notificationSchema = new mongoose.Schema(
 
     channel: {
       type: String,
-      enum: ["email"],
+      enum: ["email", "in_app"],
       default: "email",
     },
 

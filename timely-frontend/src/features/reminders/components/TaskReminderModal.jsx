@@ -4,6 +4,7 @@ import Button from "../../../shared/components/ui/Button";
 import Input from "../../../shared/components/ui/Input";
 import Modal from "../../../shared/components/ui/Modal";
 import { useOrders } from "../../../hooks/useOrders";
+import ReminderSoundToggle from "../../notifications/components/ReminderSoundToggle";
 
 const toLocalInputValue = (value) => {
   if (!value) return "";
@@ -110,6 +111,8 @@ const TaskReminderModal = ({ task, reminder, onClose }) => {
           type="datetime-local"
           value={remindAt}
         />
+
+        <ReminderSoundToggle />
 
         {error && <p className="text-sm text-danger" role="alert">{error}</p>}
 

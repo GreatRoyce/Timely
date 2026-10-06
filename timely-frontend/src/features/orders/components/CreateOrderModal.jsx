@@ -5,6 +5,7 @@ import Modal from "../../../shared/components/ui/Modal";
 import Select from "../../../shared/components/ui/Select";
 import Textarea from "../../../shared/components/ui/Textarea";
 import { useOrders } from "../../../hooks/useOrders";
+import ReminderSoundToggle from "../../notifications/components/ReminderSoundToggle";
 
 const initialForm = {
   customerName: "",
@@ -137,6 +138,7 @@ const CreateOrderModal = () => {
           <p className="mt-1 text-muted-foreground">
             Timely will remind you at the task deadline. You can change or cancel it later from the Tasks page.
           </p>
+          <ReminderSoundToggle />
         </div>
 
         <Textarea

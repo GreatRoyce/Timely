@@ -20,6 +20,7 @@ import CustomersPage from "./pages/customers/CustomersPage";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { AuthProvider } from "./context/AuthContext";
 import { OrdersProvider } from "./context/OrdersContext";
+import { NotificationsProvider } from "./context/NotificationsContext";
 import { useAuth } from "./hooks/useAuth";
 
 const ProtectedRoute = () => {
@@ -30,6 +31,17 @@ const ProtectedRoute = () => {
 const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
+};
+
+const DashboardProviders = () => {
+  const { user } = useAuth();
+  return (
+    <OrdersProvider>
+      <NotificationsProvider key={user._id || user.id || user.email}>
+        <DashboardLayout />
+      </NotificationsProvider>
+    </OrdersProvider>
+  );
 };
 
 function App() {
@@ -76,9 +88,7 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <OrdersProvider>
-                  <DashboardLayout />
-                </OrdersProvider>
+                <DashboardProviders />
               }
             >
               <Route index element={<DashboardPage />} />

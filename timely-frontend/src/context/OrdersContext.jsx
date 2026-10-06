@@ -101,6 +101,21 @@ export const OrdersProvider = ({ children }) => {
     return () => window.clearTimeout(timeoutId);
   }, [refreshOrders]);
 
+  useEffect(() => {
+    let disposed = false;
+    const refreshReminderStatuses = async () => {
+      try {
+        const current = await getReminders();
+        if (!disposed) setReminders(current.map(mapReminder));
+      } catch { /* Leave the last known reminders visible until the next refresh. */ }
+    };
+    window.addEventListener("timely:reminder-delivered", refreshReminderStatuses);
+    return () => {
+      disposed = true;
+      window.removeEventListener("timely:reminder-delivered", refreshReminderStatuses);
+    };
+  }, []);
+
   const addOrder = useCallback(
     async (order) => {
       setError("");

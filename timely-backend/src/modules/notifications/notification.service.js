@@ -81,8 +81,38 @@ const sendTaskReminder = async (reminderId) => {
   // Create Notification Record
   // ==========================================
 
-  const notification =
-    await Notification.create({
+  // Deliver in the app before attempting email, so SMTP failure cannot
+  // prevent a reminder from reaching the user's dashboard.
+  const inAppNotification = await Notification.create({
+    userId: user._id,
+    taskId: task._id,
+    reminderId: reminder._id,
+    type: "task_reminder",
+    channel: "in_app",
+    recipient: user.email,
+    subject: `Reminder: ${task.title}`,
+    message: `Your task "${task.title}" is due on ${task.dueDate.toISOString().split("T")[0]} at ${task.dueTime}.`,
+    status: "sent",
+    sentAt: new Date(),
+  });
+
+  reminder.status = "sent";
+  reminder.sentAt = inAppNotification.sentAt;
+  await reminder.save();
+
+  // SMTP must not hold up the remaining due reminders in the job.
+  deliverReminderEmail(user, task, reminder).catch((error) => {
+    console.error("Unable to record reminder email result:", error.message);
+  });
+  return inAppNotification;
+};
+
+const deliverReminderEmail = async (user, task, reminder) => {
+
+  let notification;
+
+  try {
+    notification = await Notification.create({
       userId: user._id,
       taskId: task._id,
       reminderId: reminder._id,
@@ -94,11 +124,8 @@ const sendTaskReminder = async (reminderId) => {
       status: "pending",
     });
 
-  // ==========================================
-  // Send Email
-  // ==========================================
+    // Send email separately from dashboard delivery.
 
-  try {
     await sendTaskReminderEmail({
       email: user.email,
       ownerName: user.ownerName,
@@ -123,29 +150,21 @@ const sendTaskReminder = async (reminderId) => {
 
     await notification.save();
 
-    // ----------------------------------------
-    // Mark Reminder as Sent
-    // ----------------------------------------
-
-    reminder.status = "sent";
-    reminder.sentAt = new Date();
-
-    await reminder.save();
-
     return notification;
   } catch (error) {
     // ----------------------------------------
     // Mark Notification as Failed
     // ----------------------------------------
 
-    notification.status = "failed";
-    notification.failedAt = new Date();
-    notification.errorMessage =
-      error.message;
+    if (notification) {
+      notification.status = "failed";
+      notification.failedAt = new Date();
+      notification.errorMessage = error.message;
+      await notification.save();
+    }
 
-    await notification.save();
-
-    throw error;
+    console.error("Reminder email failed:", error.message);
+    return null;
   }
 };
 
